@@ -1,15 +1,31 @@
 import React from "react";
-import { useAsync } from "../../../core/hooks";
-import { Button, Card, Checkbox, Col, Form, Input, Row } from "antd";
-import { register } from "../sandbox";
+import { useAppDispatch } from "core/hooks";
+import { Button, Card, Col, Form, Input, Row } from "antd";
+import { commitMutation, graphql } from "react-relay/hooks";
+import Relay from "core/relay";
+import { RegisterQuery } from "./__generated__/RegisterQuery.graphql";
+import { setToken } from "store/authSlice";
+import { useHistory } from "react-router-dom";
 
 export function Register() {
-  // eslint-disable-next-line
-  const { execute, status, value, error } = useAsync<string>(register, false);
+  const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const onFinish = (values: any) => {
-    console.log("Success:", values);
-    execute(values);
+    commitMutation<RegisterQuery>(Relay.environment, {
+      mutation: graphql`
+        mutation RegisterQuery($input: RegisterInput!) {
+          register(input: $input) {
+            accessToken
+          }
+        }
+      `,
+      variables: { input: values },
+      onCompleted(res) {
+        dispatch(setToken(res.register.accessToken));
+        history.push("/");
+      },
+    });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -29,8 +45,8 @@ export function Register() {
               onFinishFailed={onFinishFailed}
             >
               <Form.Item
-                label="firstName"
-                name="firstName"
+                label="name"
+                name="name"
                 rules={[
                   { required: true, message: "Please input your username!" },
                 ]}
@@ -38,8 +54,8 @@ export function Register() {
                 <Input />
               </Form.Item>
               <Form.Item
-                label="lastName"
-                name="lastName"
+                label="lastname"
+                name="lastname"
                 rules={[
                   { required: true, message: "Please input your username!" },
                 ]}
@@ -55,15 +71,6 @@ export function Register() {
               >
                 <Input />
               </Form.Item>
-              <Form.Item
-                label="phone"
-                name="phone"
-                rules={[
-                  { required: true, message: "Please input your username!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
 
               <Form.Item
                 label="Password"
@@ -73,14 +80,6 @@ export function Register() {
                 ]}
               >
                 <Input.Password />
-              </Form.Item>
-
-              <Form.Item
-                name="remember"
-                valuePropName="checked"
-                wrapperCol={{ offset: 8, span: 16 }}
-              >
-                <Checkbox>Remember me</Checkbox>
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

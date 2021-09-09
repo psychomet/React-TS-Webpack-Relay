@@ -1,20 +1,19 @@
-import React, { ReactNode } from "react";
+import React, { lazy, ReactNode } from "react";
 import { Layout, Menu } from "antd";
-import {
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 
 const { Header, Sider, Content, Footer } = Layout;
+const ArticleCategories = lazy(() => import("./articleCategory"));
 
 export function MainLayout({ children }: { children: ReactNode }) {
+  const { url } = useRouteMatch();
+
   // const [collapsed, setCollapsed] = useState<boolean>(false);
   //
   // const toggle = () => {
   //   setCollapsed(!collapsed);
   // };
-
   return (
     <>
       <Sider
@@ -30,30 +29,33 @@ export function MainLayout({ children }: { children: ReactNode }) {
         <div className="logo" />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
           <Menu.Item key="1" icon={<UserOutlined />}>
-            nav 1
+            <Link to={"/articles"}>Article</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-            nav 2
-          </Menu.Item>
-          <Menu.Item key="3" icon={<UploadOutlined />}>
-            nav 3
-          </Menu.Item>
-          <Menu.Item key="4" icon={<UserOutlined />}>
-            nav 4
+            <Link to={"/article-categories"}>Article Category</Link>
           </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
         <Header
-          className="site-layout-sub-header-background"
           style={{ padding: 0 }}
         />
-        <Content style={{ margin: "24px 16px 0" }}>
+        <Content>
           <div
-            className="site-layout-background"
-            style={{ padding: 24, minHeight: 360 }}
+            style={{ minHeight: 360 }}
           >
-            {children}
+            {/*<Button type="primary">Primary Button</Button>*/}
+            {/*<Button>Default Button</Button>*/}
+            {/*<Button type="dashed">Dashed Button</Button>*/}
+            {/*<br />*/}
+            {/*<Button type="text">Text Button</Button>*/}
+            {/*<Button type="link">Link Button</Button>*/}
+            <Switch>
+              <Route
+                path={`/article-categories`}
+                component={ArticleCategories}
+              />
+            </Switch>
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>

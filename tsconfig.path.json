@@ -5,6 +5,9 @@
       "app/*": [
         "./app/*"
       ],
+      "generated/*": [
+        "./app/__generated__/*"
+      ],
       "core/*": [
         "./app/core/*"
       ],

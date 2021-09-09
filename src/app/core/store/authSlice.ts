@@ -1,25 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "core/store";
-import { Environment } from 'relay-runtime';
-import * as Relay from "core/relay";
 
 export interface User {
   id: string;
-  email: string | null;
   name: string | null;
+  lastname: string | null;
+  email: string | null;
 }
 
 export interface AuthState {
-  user:  User | null;
+  user: User | null;
   token: string;
-  relay: Environment;
 }
-
 
 const initialState: AuthState = {
   user: null,
   token: String(localStorage.getItem("token")),
-  relay: Relay.Environment
 };
 
 export const authSlice = createSlice({
@@ -42,5 +38,6 @@ export const authSlice = createSlice({
 export const { setToken, setUser } = authSlice.actions;
 
 export const selectToken = (state: RootState): string => state.auth.token;
-export const selectRelay = (state: RootState): Environment => state.auth.relay;
+export const selectIsLoggedIn = (state: RootState): boolean =>
+  !!localStorage.getItem("token");
 export default authSlice.reducer;

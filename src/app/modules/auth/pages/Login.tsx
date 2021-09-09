@@ -1,28 +1,43 @@
-import React, { useEffect } from "react";
-import './Login.module.css';
+import React from "react";
 import { Button, Card, Checkbox, Col, Form, Input, Row } from "antd";
 import { login } from "../sandbox";
-import {setToken} from "store/authSlice";
-import {useAppDispatch, useAsync} from "core/hooks";
+import { setToken } from "store/authSlice";
+import { useAppDispatch } from "core/hooks";
+import { commitMutation, graphql } from "react-relay/hooks";
+import Relay from "core/relay";
+import { useHistory } from "react-router-dom";
+import { LoginQuery } from "./__generated__/LoginQuery.graphql";
 
 export function Login() {
-  // eslint-disable-next-line
   const dispatch = useAppDispatch();
-  // eslint-disable-next-line
-  const { execute, status, value, error } = useAsync<string>(onLogin, false);
+  const history = useHistory();
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
-    execute(values);
+    commitMutation<LoginQuery>(Relay.environment, {
+      mutation: graphql`
+        mutation LoginQuery($input: LoginInput!) {
+          login(input: $input) {
+            accessToken
+          }
+        }
+      `,
+      variables: { input: values },
+      onCompleted(res) {
+        console.log("res", res);
+        dispatch(setToken(res.login.accessToken));
+        history.push("/");
+      },
+    });
   };
   // const stableDispatch = useCallback(dispatch, [])
 
-  useEffect(() => {
-    console.log("value", value);
-    if (value){
-      dispatch(setToken(value.data.token.accessToken));
-    }
-  }, [value, dispatch]);
+  // useEffect(() => {
+  //   console.log("value", value);
+  //   if (value){
+  //     dispatch(setToken(value.data.token.accessToken));
+  //   }
+  // }, [value, dispatch]);
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -58,14 +73,6 @@ export function Login() {
                 ]}
               >
                 <Input.Password />
-              </Form.Item>
-
-              <Form.Item
-                name="remember"
-                valuePropName="checked"
-                wrapperCol={{ offset: 8, span: 16 }}
-              >
-                <Checkbox>Remember me</Checkbox>
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

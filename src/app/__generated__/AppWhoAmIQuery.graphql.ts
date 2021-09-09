@@ -9,6 +9,7 @@ export type AppWhoAmIQueryResponse = {
         readonly id: string;
         readonly name: string;
         readonly lastname: string;
+        readonly email: string;
     };
 };
 export type AppWhoAmIQuery = {
@@ -24,6 +25,7 @@ query AppWhoAmIQuery {
     id
     name
     lastname
+    email
   }
 }
 */
@@ -58,6 +60,13 @@ var v0 = [
         "kind": "ScalarField",
         "name": "lastname",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "email",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -81,14 +90,14 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "4a6c6535e0f181cb5bfee675462eeeaa",
+    "cacheID": "a1936ae49cd1c2b3d39247ee5e6adf37",
     "id": null,
     "metadata": {},
     "name": "AppWhoAmIQuery",
     "operationKind": "query",
-    "text": "query AppWhoAmIQuery {\n  whoAmI {\n    id\n    name\n    lastname\n  }\n}\n"
+    "text": "query AppWhoAmIQuery {\n  whoAmI {\n    id\n    name\n    lastname\n    email\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '938b68245e1ecafe73d746a42ef4333a';
+(node as any).hash = 'db7a7c7212586c3819ba017d322520f2';
 export default node;
